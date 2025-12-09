@@ -1,10 +1,11 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useApi } from './api';
+import type { ResponseResult, Result } from './types';
 
 function App() {
-  const [allModels, setAllModels] = useState([]);
+  const [allModels, setAllModels] = useState<string[]>([]);
   const [availability, setAvailability] = useState(false);
-  const [models, setModels] = useState([]);
+  const [queryModels, setQueryModels] = useState<string[]>([]);
   const [fuelType, setFuelType] = useState('');
   const [towbar, setTowbar] = useState(false);
   const [winterTires, setWinterTires] = useState(false);
@@ -14,7 +15,7 @@ function App() {
     params: {
       filter: {
         onlyAvailable: availability || undefined,
-        models: models.length > 0 ? models : undefined,
+        models: queryModels.length > 0 ? queryModels : undefined,
         fuelType: fuelType || undefined,
         towbar: towbar || undefined,
         winterTires: winterTires || undefined,
@@ -28,14 +29,14 @@ function App() {
     },
   });
 
-  const result = useMemo(() => data?.result || [], [data]);
+  const result = useMemo<ResponseResult>(() => data?.result || {}, [data]);
 
   useEffect(() => {
     if (data?.result?.results?.length && allModels.length === 0) {
-      const models = Array.from(
+      const models: string[] = Array.from(
         new Set(
           data.result.results
-            .map((item) => item.resource?.model)
+            .map((item: Result) => item.resource?.model)
             .filter(Boolean)
         )
       );
@@ -44,7 +45,7 @@ function App() {
   }, [data, allModels.length]);
 
   const resetFilters = () => {
-    setModels([]);
+    setQueryModels([]);
     setAvailability(false);
     setFuelType('');
     setTowbar(false);
@@ -66,14 +67,15 @@ function App() {
                     key={model}
                     type="button"
                     onClick={() =>
-                      setModels((prev) =>
+                      setQueryModels((prev) =>
                         prev.includes(model)
                           ? prev.filter((m) => m !== model)
                           : [...prev, model]
                       )
                     }
                   >
-                    {model} {models.includes(model) ? '(Geselecteerd)' : ''}
+                    {model}{' '}
+                    {queryModels.includes(model) ? '(Geselecteerd)' : ''}
                   </button>
                 )
             )}
@@ -81,7 +83,7 @@ function App() {
         )}
 
         <div>
-          <button type="button" onClick={() => setModels([])}>
+          <button type="button" onClick={() => setQueryModels([])}>
             Wis selectie
           </button>
         </div>
@@ -147,34 +149,35 @@ function App() {
           </p>
 
           {result.results?.map((item, index) => {
-            const resource = item.resource || {};
+            const resource = item.resource || null;
             const availability = item.availability ?? 'Unknown';
 
-            return (
-              <section key={resource.id || index}>
-                <h2>
-                  {resource.brand} {resource.model}
-                </h2>
+            if (resource)
+              return (
+                <section key={resource.id || index}>
+                  <h2>
+                    {resource.brand} {resource.model}
+                  </h2>
 
-                <ul>
-                  <li>
-                    Address: {resource.location} {resource.streetNumber},{' '}
-                    {resource.city}
-                  </li>
-                  <li>Fuel type: {resource.fuelType}</li>
-                  <li>Availability: {availability}</li>
-                  <li>Rate: €{resource.price.hourRate}/hour</li>
-                </ul>
+                  <ul>
+                    <li>
+                      Address: {resource.location} {resource.streetNumber},{' '}
+                      {resource.city}
+                    </li>
+                    <li>Fuel type: {resource.fuelType}</li>
+                    <li>Availability: {availability}</li>
+                    <li>Rate: €{resource.price.hourRate}/hour</li>
+                  </ul>
 
-                {resource.imageUrl && (
-                  <img
-                    src={resource.imageUrl}
-                    alt={`${resource.brand} ${resource.model}`}
-                    width="300"
-                  />
-                )}
-              </section>
-            );
+                  {resource.imageUrl && (
+                    <img
+                      src={resource.imageUrl}
+                      alt={`${resource.brand} ${resource.model}`}
+                      width="300"
+                    />
+                  )}
+                </section>
+              );
           })}
         </>
       )}
