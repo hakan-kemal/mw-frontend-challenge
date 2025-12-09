@@ -1,7 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import type { RequestBody } from './types';
+import type { RequestBody } from '@/types';
 
-const API_URL = 'https://php-api.mywheels.dev/api/';
+// const API_URL = 'https://php-api.mywheels.dev/api/';
+const API_URL = '/api';
 
 export const useApi = ({
   method,
@@ -14,8 +15,6 @@ export const useApi = ({
         method: 'POST',
         headers: {
           'content-type': 'application/json',
-          'X-Simple-Auth-App-Id':
-            '1_4ufl98675y8088ko4k80wow4soo0g8cog8kwsssoo4k4ggc84k',
         },
         body: JSON.stringify({
           jsonrpc: '2.0',

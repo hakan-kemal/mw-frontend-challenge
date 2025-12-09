@@ -1,8 +1,10 @@
-import { useEffect, useState, useMemo } from 'react';
-import { useApi } from './api';
-import type { ResponseResult, Result } from './types';
+'use client';
 
-function App() {
+import { useEffect, useState, useMemo } from 'react';
+import { useApi } from '@/lib/api';
+import type { ResponseResult, Result } from '@/types';
+
+export default function Home() {
   const [allModels, setAllModels] = useState<string[]>([]);
   const [availability, setAvailability] = useState(false);
   const [queryModels, setQueryModels] = useState<string[]>([]);
@@ -54,8 +56,8 @@ function App() {
 
   return (
     <div>
-      <fieldset>
-        <legend>Filter auto's</legend>
+      <fieldset className="border m-2 p-2">
+        <legend>Filter auto&apos;s</legend>
 
         {allModels.length > 0 && (
           <div>
@@ -64,6 +66,7 @@ function App() {
               (model) =>
                 model && (
                   <button
+                    className="border m-1 p-1"
                     key={model}
                     type="button"
                     onClick={() =>
@@ -83,7 +86,11 @@ function App() {
         )}
 
         <div>
-          <button type="button" onClick={() => setQueryModels([])}>
+          <button
+            className="border m-1 p-1"
+            type="button"
+            onClick={() => setQueryModels([])}
+          >
             Wis selectie
           </button>
         </div>
@@ -92,6 +99,7 @@ function App() {
           <label>
             Brandstoftype
             <select
+              className="border m-1 p-1"
               value={fuelType}
               onChange={(e) => setFuelType(e.target.value)}
             >
@@ -102,16 +110,16 @@ function App() {
           </label>
         </div>
 
-        <label>
+        <label className="border m-1 p-1">
           <input
             type="checkbox"
             checked={availability}
             onChange={(e) => setAvailability(e.target.checked)}
           />
-          Alleen beschikbare auto's
+          Alleen beschikbare auto&apos;s
         </label>
 
-        <label>
+        <label className="border m-1 p-1">
           <input
             type="checkbox"
             checked={towbar}
@@ -120,7 +128,7 @@ function App() {
           Trekhaak
         </label>
 
-        <label>
+        <label className="border m-1 p-1">
           <input
             type="checkbox"
             checked={winterTires}
@@ -131,7 +139,11 @@ function App() {
 
         <div>
           <label>
-            <button type="button" onClick={() => resetFilters()}>
+            <button
+              className="border m-1 p-1"
+              type="button"
+              onClick={() => resetFilters()}
+            >
               Wis filters
             </button>
           </label>
@@ -184,5 +196,3 @@ function App() {
     </div>
   );
 }
-
-export default App;

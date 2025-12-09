@@ -1,34 +1,36 @@
-# MyWheels Frontend Challenge
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Development
+## Getting Started
 
-- Install the dependencies: `npm install`
-- Run the development server: `npm run dev`
+First, run the development server:
 
-## Assignment
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
 
-Create a small application that displays a list of resources (cars) that are provided by the API. You can use the `useApi` method provided in `src/api.js` as a starting point to fetch the JSON containing the resources.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-1. Display a list of resources, for each of the items in the list display at least the following information:
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-   - Brand
-   - Model
-   - Address
-   - Fuel type
-   - Availability
-   - Rate per/hour
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-2. Add an input field that searches for specific resource models.
-3. Create a way to filter the list on fuel type, availability, winter tires and towbar.
-4. Show the number of found resources.
+## Learn More
 
-## Optional tasks
+To learn more about Next.js, take a look at the following resources:
 
-As a bonus one of the following additional features could be added to the application.
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-- Convert the code to use TypeScript
-- Add the option to toggle between a list view and a map view.
-- Create automated tests for (a part) of the application.
-- Use [Next.js](https://nextjs.org/docs/) instead of the Vite setup.
-- Add a personal touch by styling the application.
-- Pitch an idea for a great additional feature and show (in rough lines) how that could be implemented.
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
