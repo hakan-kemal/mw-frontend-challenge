@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useApi } from './api';
 
 function App() {
-  const [modelQuery, setModelQuery] = useState('');
-  const [fuelType, setFuelType] = useState('');
+  const [allModels, setAllModels] = useState([]);
   const [availability, setAvailability] = useState(false);
+  const [models, setModels] = useState([]);
+  const [fuelType, setFuelType] = useState('');
   const [towbar, setTowbar] = useState(false);
   const [winterTires, setWinterTires] = useState(false);
 
@@ -13,7 +14,7 @@ function App() {
     params: {
       filter: {
         onlyAvailable: availability || undefined,
-        models: modelQuery ? [modelQuery] : undefined,
+        models: models.length > 0 ? models : undefined,
         fuelType: fuelType || undefined,
         towbar: towbar || undefined,
         winterTires: winterTires || undefined,
@@ -27,22 +28,62 @@ function App() {
     },
   });
 
-  const result = data?.result || [];
+  const result = useMemo(() => data?.result || [], [data]);
+
+  useEffect(() => {
+    if (data?.result?.results?.length && allModels.length === 0) {
+      const models = Array.from(
+        new Set(
+          data.result.results
+            .map((item) => item.resource?.model)
+            .filter(Boolean)
+        )
+      );
+      setAllModels(models);
+    }
+  }, [data, allModels.length]);
+
+  const resetFilters = () => {
+    setModels([]);
+    setAvailability(false);
+    setFuelType('');
+    setTowbar(false);
+    setWinterTires(false);
+  };
 
   return (
     <div>
       <fieldset>
         <legend>Filter auto's</legend>
 
+        {allModels.length > 0 && (
+          <div>
+            <p style={{ margin: '0' }}>Filter op</p>
+            {allModels.map(
+              (model) =>
+                model && (
+                  <button
+                    key={model}
+                    type="button"
+                    onClick={() =>
+                      setModels((prev) =>
+                        prev.includes(model)
+                          ? prev.filter((m) => m !== model)
+                          : [...prev, model]
+                      )
+                    }
+                  >
+                    {model} {models.includes(model) ? '(Geselecteerd)' : ''}
+                  </button>
+                )
+            )}
+          </div>
+        )}
+
         <div>
-          <label>
-            Zoek op model
-            <input
-              type="text"
-              value={modelQuery}
-              onChange={(e) => setModelQuery(e.target.value)}
-            />
-          </label>
+          <button type="button" onClick={() => setModels([])}>
+            Wis selectie
+          </button>
         </div>
 
         <div>
@@ -85,6 +126,14 @@ function App() {
           />
           Winterbanden
         </label>
+
+        <div>
+          <label>
+            <button type="button" onClick={() => resetFilters()}>
+              Wis filters
+            </button>
+          </label>
+        </div>
       </fieldset>
 
       {isLoading && <p>Resultaten aan het laden...</p>}
