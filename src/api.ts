@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import type { ApiRequestBody } from './types';
+import type { RequestBody } from './types';
 
 const API_URL = 'https://php-api.mywheels.dev/api/';
 
 export const useApi = ({
   method,
   params,
-}: Omit<ApiRequestBody, 'jsonrpc' | 'id'>) => {
+}: Omit<RequestBody, 'jsonrpc' | 'id'>) => {
   return useQuery({
     queryKey: ['resourceData', method, params],
     queryFn: async () => {

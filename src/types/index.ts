@@ -1,11 +1,11 @@
-export interface ApiRequestBody {
+export interface RequestBody {
   jsonrpc: string;
   id: number;
   method: string;
-  params: ApiRequestParams;
+  params: Params;
 }
 
-interface ApiRequestParams {
+interface Params {
   filter: Filter;
   locationPoint: LocationPoint;
 }
@@ -25,6 +25,13 @@ interface LocationPoint {
   longitudeMin: number;
 }
 
+export interface ResponseBody {
+  jsonrpc: string;
+  authenticated: boolean;
+  result: ResponseResult;
+  id: string;
+}
+
 export interface ResponseResult {
   results: Result[];
   current: number;
@@ -34,57 +41,45 @@ export interface ResponseResult {
   riskyNightTrip: RiskyNightTrip;
 }
 
-interface RiskyNightTrip {
-  minimumTrips: number;
-  startTime: Time;
-  endTime: Time;
-}
-
-interface Time {
-  hour: string;
-  minute: string;
-  second: string;
-}
-
 export interface Result {
-  resource: Vehicle | null;
-  availability: boolean | null;
-  shouldDischarge: boolean | null;
-  distance: number | null;
+  resource: Resource;
+  availability: boolean | any;
+  shouldDischarge: boolean;
+  distance: number | any;
 }
 
-export interface Vehicle {
+export interface Resource {
   id: number;
   registrationPlate: string;
   alias: string;
   resourceType: string;
-  brand: string;
-  model: string;
-  color: string;
-  fuelType: string;
+  brand?: string;
+  model?: string;
+  color?: string;
+  fuelType?: string;
   numberOfSeats: number;
   location: string;
-  streetNumber: string;
+  streetNumber?: string;
   latitude: number;
   longitude: number;
-  advertisement: string | null;
+  advertisement?: string;
   discounted: boolean;
   created: string;
   city: string;
   locktype: string;
   parkingType: string;
-  fuelLevel: number;
-  fuelRange: number;
+  fuelLevel?: number;
+  fuelRange?: number;
   charging: boolean;
-  chargeAdapterConnected: boolean | null;
+  chargeAdapterConnected?: boolean;
   fuelRangeDefault: number;
-  chargeAdapterConnectedSince: string | null;
+  chargeAdapterConnectedSince?: string;
   price: Price;
   options: Options;
   locktypes: string[];
   favorite: boolean;
   category: string;
-  imageUrl: string | null;
+  imageUrl?: string;
 }
 
 interface Price {
@@ -100,4 +95,16 @@ interface Options {
   automatic: boolean;
   winterTires: boolean;
   towbar: boolean;
+}
+
+interface RiskyNightTrip {
+  minimumTrips: number;
+  startTime: Time;
+  endTime: Time;
+}
+
+interface Time {
+  hour: string;
+  minute: string;
+  second: string;
 }
