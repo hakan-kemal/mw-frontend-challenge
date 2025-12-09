@@ -1,6 +1,9 @@
+import { useState } from 'react';
 import { useApi } from './api';
 
 function App() {
+  const [query, setQuery] = useState('');
+
   const { data, isLoading } = useApi({
     method: 'search.map',
     params: {
@@ -21,17 +24,27 @@ function App() {
   });
 
   const results = data?.result?.results || [];
+  const filteredResults = results.filter((item) => {
+    const model = item.resource?.model || '';
+    return model.toLowerCase().includes(query.toLowerCase());
+  });
 
   if (isLoading) return <p>Loading...</p>;
-
   if (!results.length) return <p>No results found.</p>;
 
   return (
     <div>
-      {results.map((item, index) => {
+      <input
+        type="text"
+        value={query}
+        placeholder="Search my model"
+        onChange={(e) => setQuery(e.target.value)}
+      />
+
+      {filteredResults.map((item, index) => {
         const resource = item.resource || {};
         const availability = item.availability ?? 'Unknown';
-        console.log('Resource:', resource);
+
         return (
           <section key={resource.id || index}>
             <h2>
