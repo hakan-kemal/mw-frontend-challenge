@@ -1,15 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 
 const API_URL = 'https://php-api.mywheels.dev/api/';
 
 export const useApi = ({ method, params }) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState();
-
-  useEffect(() => {
-    (async () => {
-      setIsLoading(true);
-
+  return useQuery({
+    queryKey: ['resourceData', method, params],
+    queryFn: async () => {
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: {
@@ -25,10 +21,18 @@ export const useApi = ({ method, params }) => {
         }),
       });
 
-      setData(await response.json());
-      setIsLoading(false);
-    })();
-  }, [setIsLoading, setData]);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-  return { isLoading, data };
+      const data = await response.json();
+
+      if (data.error) {
+        throw new Error(data.error.message || 'API error');
+      }
+
+      return data;
+    },
+    enabled: Boolean(method),
+  });
 };
