@@ -7,9 +7,10 @@ import type { ResponseResult } from '@/types';
 interface ResourcesProps {
   result: ResponseResult;
   isLoading: boolean;
+  error?: Error | null;
 }
 
-export default function Resources({ result, isLoading }: ResourcesProps) {
+export default function Resources({ result, isLoading, error }: ResourcesProps) {
   const [isGridView, setIsGridView] = useState(false);
 
   const toggleView = () => setIsGridView(!isGridView);
@@ -18,6 +19,14 @@ export default function Resources({ result, isLoading }: ResourcesProps) {
     return (
       <p className="text-xl font-semibold text-green-700 animate-pulse">
         Resultaten aan het laden...
+      </p>
+    );
+  }
+
+  if (error) {
+    return (
+      <p className="text-xl font-semibold text-red-700">
+        Fout bij ophalen van resultaten: {error.message}
       </p>
     );
   }
@@ -47,12 +56,20 @@ export default function Resources({ result, isLoading }: ResourcesProps) {
 
       <div
         className={`grid ${
-          isGridView ? 'grid-cols-4' : 'grid-cols-1'
+          isGridView
+            ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
+            : 'grid-cols-1'
         } gap-8 mt-8`}
       >
         {result.results?.map((item, index) => {
-          const resource = item.resource || null;
-          const availability = item.availability ?? 'Unknown';
+          const resource = item.resource;
+          if (!resource) return null;
+          const availability =
+            item.availability === true
+              ? 'Beschikbaar'
+              : item.availability === false
+                ? 'Niet beschikbaar'
+                : 'Onbekend';
 
           return (
             <div

@@ -1,23 +1,46 @@
 import { NextResponse } from 'next/server';
 
-const API_URL = 'https://php-api.mywheels.dev/api/';
+const API_URL = process.env.MYWHEELS_API_URL;
+const AUTH_APP_ID = process.env.MYWHEELS_AUTH_APP_ID;
 
 export async function POST(request: Request) {
-  const reqBody = await request.json();
+  if (!API_URL || !AUTH_APP_ID) {
+    return NextResponse.json(
+      { error: 'API configuration missing on the server' },
+      { status: 500 }
+    );
+  }
 
-  const response = await fetch(API_URL, {
-    method: 'POST',
-    headers: {
-      'content-type': 'application/json',
-      'X-Simple-Auth-App-Id':
-        '1_4ufl98675y8088ko4k80wow4soo0g8cog8kwsssoo4k4ggc84k',
-    },
-    body: JSON.stringify(reqBody),
-  });
+  try {
+    const reqBody = await request.json();
 
-  const data = await response.json();
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'X-Simple-Auth-App-Id': AUTH_APP_ID,
+      },
+      body: JSON.stringify(reqBody),
+    });
 
-  return NextResponse.json(data, {
-    status: response.status,
-  });
+    const data = await response.json();
+
+    if (!response.ok) {
+      return NextResponse.json(
+        { error: data?.error || 'Upstream API error' },
+        { status: response.status }
+      );
+    }
+
+    return NextResponse.json(data, {
+      status: response.status,
+    });
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : 'Unexpected server error';
+    return NextResponse.json(
+      { error: message },
+      { status: 500 }
+    );
+  }
 }

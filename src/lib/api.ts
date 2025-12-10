@@ -1,15 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
-import type { RequestBody } from '@/types';
+import type { RequestBody, ResponseBody } from '@/types';
 
-// const API_URL = 'https://php-api.mywheels.dev/api/';
 const API_URL = '/api';
 
-export const useApi = ({
+export const useApi = <TResult = ResponseBody>({
   method,
   params,
-}: Omit<RequestBody, 'jsonrpc' | 'id'>) => {
-  return useQuery({
-    queryKey: ['resourceData', method, params],
+}: Omit<RequestBody, 'jsonrpc' | 'id'>) =>
+  useQuery<TResult>({
+    queryKey: ['resourceData', method, JSON.stringify(params ?? {})],
     queryFn: async () => {
       const response = await fetch(API_URL, {
         method: 'POST',
@@ -28,14 +27,18 @@ export const useApi = ({
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const data = await response.json();
+      const data = (await response.json()) as TResult & {
+        error?: { message?: string };
+      };
 
-      if (data.error) {
-        throw new Error(data.error.message || 'API error');
+      if ((data as { error?: { message?: string } }).error) {
+        throw new Error(
+          (data as { error?: { message?: string } }).error?.message ||
+            'API error'
+        );
       }
 
       return data;
     },
     enabled: Boolean(method),
   });
-};

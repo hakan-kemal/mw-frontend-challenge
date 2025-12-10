@@ -1,14 +1,26 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useApi } from '@/lib/api';
-import type { ResponseResult, Result } from '@/types';
+import type { ResponseBody, ResponseResult, Result } from '@/types';
 import ResourceFilter from '@/components/ResourceFilter';
 import Resources from '@/components/Resources';
 import Map from '@/components/Map';
 
+const emptyResult: ResponseResult = {
+  results: [],
+  current: 0,
+  offset: 0,
+  limit: 0,
+  total: 0,
+  riskyNightTrip: {
+    minimumTrips: 0,
+    startTime: { hour: '0', minute: '0', second: '0' },
+    endTime: { hour: '0', minute: '0', second: '0' },
+  },
+};
+
 export default function Home() {
-  const [allModels, setAllModels] = useState<string[]>([]);
   const [availability, setAvailability] = useState(false);
   const [queryModels, setQueryModels] = useState<string[]>([]);
   const [fuelType, setFuelType] = useState('');
@@ -34,7 +46,7 @@ export default function Home() {
     [availability, queryModels, fuelType, towbar, winterTires]
   );
 
-  const { data, isLoading } = useApi({
+  const { data, isLoading, error } = useApi<ResponseBody<ResponseResult>>({
     method: 'search.map',
     params: {
       filter,
@@ -42,20 +54,22 @@ export default function Home() {
     },
   });
 
-  const result = useMemo<ResponseResult>(() => data?.result || {}, [data]);
+  const result = useMemo<ResponseResult>(
+    () => data?.result || emptyResult,
+    [data]
+  );
 
-  useEffect(() => {
-    if (data?.result?.results?.length && allModels.length === 0) {
-      const models: string[] = Array.from(
-        new Set(
-          data.result.results
-            .map((item: Result) => item.resource?.model)
-            .filter(Boolean)
-        )
-      );
-      setAllModels(models);
-    }
-  }, [data, allModels.length]);
+  const allModels = useMemo<string[]>(() => {
+    if (!data?.result?.results?.length) return [];
+
+    return Array.from(
+      new Set(
+        data.result.results
+          .map((item: Result) => item.resource?.model)
+          .filter((model): model is string => Boolean(model))
+      )
+    );
+  }, [data]);
 
   return (
     <>
@@ -78,7 +92,7 @@ export default function Home() {
 
       <Map locationPoint={locationPoint} result={result.results} />
 
-      <Resources result={result} isLoading={isLoading} />
+      <Resources result={result} isLoading={isLoading} error={error} />
     </>
   );
 }

@@ -11,6 +11,7 @@ interface MapProps {
 export default function Map({ locationPoint, result }: MapProps) {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const [map, setMap] = useState<mapboxgl.Map | null>(null);
+  const markersRef = useRef<mapboxgl.Marker[]>([]);
 
   const { latitudeMin, latitudeMax, longitudeMin, longitudeMax } =
     locationPoint;
@@ -46,17 +47,38 @@ export default function Map({ locationPoint, result }: MapProps) {
     longitudeMax,
   ]);
 
-  if (result && map) {
-    for (const marker of result) {
-      new mapboxgl.Marker()
-        .setLngLat(
-          marker.resource.longitude && marker.resource.latitude
-            ? [marker.resource.longitude, marker.resource.latitude]
-            : [0, 0]
-        )
-        .addTo(map);
+  useEffect(() => {
+    if (!map) return;
+
+    // remove old markers
+    markersRef.current.forEach((marker) => marker.remove());
+    markersRef.current = [];
+
+    if (!result || result.length === 0) return;
+
+    const bounds = new mapboxgl.LngLatBounds();
+
+    result.forEach((marker) => {
+      const hasCoords =
+        typeof marker.resource.longitude === 'number' &&
+        typeof marker.resource.latitude === 'number';
+
+      if (!hasCoords) return;
+
+      const newMarker = new mapboxgl.Marker().setLngLat([
+        marker.resource.longitude,
+        marker.resource.latitude,
+      ]);
+
+      newMarker.addTo(map);
+      markersRef.current.push(newMarker);
+      bounds.extend([marker.resource.longitude, marker.resource.latitude]);
+    });
+
+    if (!bounds.isEmpty()) {
+      map.fitBounds(bounds, { padding: 50, maxZoom: 14, duration: 500 });
     }
-  }
+  }, [map, result]);
 
   return (
     <div

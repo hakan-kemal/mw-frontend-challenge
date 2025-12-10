@@ -25,10 +25,10 @@ export interface LocationPoint {
   longitudeMin: number;
 }
 
-export interface ResponseBody {
+export interface ResponseBody<T = ResponseResult> {
   jsonrpc: string;
   authenticated: boolean;
-  result: ResponseResult;
+  result: T;
   id: string;
 }
 
@@ -43,9 +43,9 @@ export interface ResponseResult {
 
 export interface Result {
   resource: Resource;
-  availability: boolean | any;
+  availability: boolean | null;
   shouldDischarge: boolean;
-  distance: number | any;
+  distance: number | null;
 }
 
 export interface Resource {
