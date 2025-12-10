@@ -5,6 +5,7 @@ import { useApi } from '@/lib/api';
 import type { ResponseResult, Result } from '@/types';
 import ResourceFilter from '@/components/ResourceFilter';
 import Resources from '@/components/Resources';
+import Map from '@/components/Map';
 
 export default function Home() {
   const [allModels, setAllModels] = useState<string[]>([]);
@@ -14,9 +15,8 @@ export default function Home() {
   const [towbar, setTowbar] = useState(false);
   const [winterTires, setWinterTires] = useState(false);
 
-  const { data, isLoading } = useApi({
-    method: 'search.map',
-    params: {
+  const { filter, locationPoint } = useMemo(
+    () => ({
       filter: {
         onlyAvailable: availability || undefined,
         models: queryModels.length > 0 ? queryModels : undefined,
@@ -30,6 +30,15 @@ export default function Home() {
         longitudeMax: 9,
         longitudeMin: 1,
       },
+    }),
+    [availability, queryModels, fuelType, towbar, winterTires]
+  );
+
+  const { data, isLoading } = useApi({
+    method: 'search.map',
+    params: {
+      filter,
+      locationPoint,
     },
   });
 
@@ -66,6 +75,8 @@ export default function Home() {
         }}
         allModels={allModels}
       />
+
+      <Map locationPoint={locationPoint} result={result.results} />
 
       <Resources result={result} isLoading={isLoading} />
     </>

@@ -55,37 +55,35 @@ export default function Resources({ result, isLoading }: ResourcesProps) {
           const availability = item.availability ?? 'Unknown';
 
           return (
-            resource && (
-              <div
-                key={resource.id || index}
-                className="w-full max-w-xs p-3 rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-green-200"
-              >
-                <h2 className="text-lg font-semibold text-green-800 mb-2">
-                  {resource.brand} {resource.model}
-                </h2>
+            <div
+              key={resource.id || index}
+              className="w-full max-w-xs p-3 rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-green-200"
+            >
+              <h2 className="text-lg font-semibold text-green-800 mb-2">
+                {resource.brand} {resource.model}
+              </h2>
 
-                <ul className="text-sm text-gray-700 space-y-1 mb-2">
-                  <li>
-                    📍 {resource.location} {resource.streetNumber},{' '}
-                    {resource.city}
-                  </li>
-                  <li>⛽ {resource.fuelType}</li>
-                  <li>📅 {availability}</li>
-                  <li>💶 €{resource.price.hourRate}/uur</li>
-                </ul>
+              <ul className="text-sm text-gray-700 space-y-1 mb-2">
+                <li>
+                  📍 {resource.location} {resource.streetNumber},{' '}
+                  {resource.city}
+                </li>
+                <li>⛽ {resource.fuelType}</li>
+                <li>📅 {availability}</li>
+                <li>💶 €{resource.price.hourRate}/uur</li>
+              </ul>
 
-                {resource.imageUrl && (
-                  <Image
-                    src={resource.imageUrl}
-                    alt={`${resource.brand} ${resource.model}`}
-                    loading="lazy"
-                    width={300}
-                    height={200}
-                    className="w-full h-32 object-cover hover:scale-105 transition-transform duration-300"
-                  />
-                )}
-              </div>
-            )
+              {resource.imageUrl && (
+                <Image
+                  src={resource.imageUrl}
+                  alt={`${resource.brand} ${resource.model}`}
+                  loading="lazy"
+                  width={300}
+                  height={200}
+                  className="w-full h-32 object-cover hover:scale-105 transition-transform duration-300"
+                />
+              )}
+            </div>
           );
         })}
       </div>

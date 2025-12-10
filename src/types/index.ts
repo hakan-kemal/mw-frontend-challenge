@@ -18,7 +18,7 @@ interface Filter {
   winterTires?: boolean;
 }
 
-interface LocationPoint {
+export interface LocationPoint {
   latitudeMax: number;
   latitudeMin: number;
   longitudeMax: number;
