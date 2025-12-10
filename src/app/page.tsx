@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useStore, type Store } from '@/lib/store';
 import { useApi } from '@/lib/api';
 import type { ResponseBody, ResponseResult, Result } from '@/types';
 import ResourceFilter from '@/components/ResourceFilter';
@@ -26,6 +27,7 @@ export default function Home() {
   const [fuelType, setFuelType] = useState('');
   const [towbar, setTowbar] = useState(false);
   const [winterTires, setWinterTires] = useState(false);
+  const { allModels, setAllModels } = useStore();
 
   const { filter, locationPoint } = useMemo(
     () => ({
@@ -59,17 +61,16 @@ export default function Home() {
     [data]
   );
 
-  const allModels = useMemo<string[]>(() => {
-    if (!data?.result?.results?.length) return [];
+  useEffect(() => {
+    if (!data) return;
 
-    return Array.from(
-      new Set(
-        data.result.results
-          .map((item: Result) => item.resource?.model)
-          .filter((model): model is string => Boolean(model))
-      )
-    );
-  }, [data]);
+    const models =
+      data.result.results
+        ?.map((item: Result) => item.resource?.model)
+        .filter((model): model is string => Boolean(model)) ?? [];
+
+    if (models.length) setAllModels(models);
+  }, [data, setAllModels]);
 
   return (
     <>

@@ -10,7 +10,11 @@ interface ResourcesProps {
   error?: Error | null;
 }
 
-export default function Resources({ result, isLoading, error }: ResourcesProps) {
+export default function Resources({
+  result,
+  isLoading,
+  error,
+}: ResourcesProps) {
   const [isGridView, setIsGridView] = useState(false);
 
   const toggleView = () => setIsGridView(!isGridView);
@@ -68,8 +72,8 @@ export default function Resources({ result, isLoading, error }: ResourcesProps) 
             item.availability === true
               ? 'Beschikbaar'
               : item.availability === false
-                ? 'Niet beschikbaar'
-                : 'Onbekend';
+              ? 'Niet beschikbaar'
+              : 'Onbekend';
 
           return (
             <div
