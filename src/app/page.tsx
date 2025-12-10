@@ -49,7 +49,7 @@ export default function Home() {
   }, [data, allModels.length]);
 
   return (
-    <div>
+    <>
       <ResourceFilter
         onFilterChange={({
           queryModels,
@@ -68,6 +68,6 @@ export default function Home() {
       />
 
       <Resources result={result} isLoading={isLoading} />
-    </div>
+    </>
   );
 }

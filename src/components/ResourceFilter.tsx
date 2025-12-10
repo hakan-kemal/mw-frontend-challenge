@@ -65,48 +65,53 @@ export default function ResourceFilter({
   };
 
   return (
-    <fieldset className="border m-2 p-2">
-      <legend>Filter auto&apos;s</legend>
+    <fieldset className="border border-green-200 rounded-2xl p-4 bg-green-50 shadow-md max-w-md w-full">
+      <legend className="text-xl font-bold text-green-800">
+        Filter auto&apos;s
+      </legend>
 
       {allModels.length > 0 && (
-        <div>
-          <p style={{ margin: '0' }}>Filter op</p>
-          {allModels.map(
-            (model) =>
-              model && (
-                <button
-                  className="border m-1 p-1"
-                  key={model}
-                  type="button"
-                  onClick={() => handleModelToggle(model)}
-                >
-                  {model}{' '}
-                  {filters.queryModels.includes(model) ? '(Geselecteerd)' : ''}
-                </button>
-              )
-          )}
+        <div className="mb-4">
+          <p className="font-medium text-green-700 mb-2">Filter op model:</p>
+          <div className="flex flex-wrap gap-2">
+            {allModels.map(
+              (model) =>
+                model && (
+                  <button
+                    key={model}
+                    type="button"
+                    onClick={() => handleModelToggle(model)}
+                    className={`px-3 py-1 rounded-full border transition-colors duration-200 ${
+                      filters.queryModels.includes(model)
+                        ? 'bg-green-600 text-white border-green-600'
+                        : 'bg-white text-green-800 border-green-300 hover:bg-green-100'
+                    }`}
+                  >
+                    {model}
+                  </button>
+                )
+            )}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => {
+              const newFilters = { ...filters, queryModels: [] };
+              setFilters(newFilters);
+              onFilterChange(newFilters);
+            }}
+            className="mt-2 px-3 py-1 text-sm text-green-700 hover:text-white hover:bg-green-600 rounded-full border border-green-400 transition"
+          >
+            Wis selectie
+          </button>
         </div>
       )}
 
-      <div>
-        <button
-          className="border m-1 p-1"
-          type="button"
-          onClick={() => {
-            const newFilters = { ...filters, queryModels: [] };
-            setFilters(newFilters);
-            onFilterChange(newFilters);
-          }}
-        >
-          Wis selectie
-        </button>
-      </div>
-
-      <div>
-        <label>
+      <div className="mb-4">
+        <label className="flex flex-col text-green-800 font-medium mb-2">
           Brandstoftype
           <select
-            className="border m-1 p-1"
+            className="mt-1 p-2 border rounded-lg bg-white border-green-300 text-green-800 focus:ring-2 focus:ring-green-400"
             value={filters.fuelType}
             onChange={(e) => handleFuelTypeChange(e.target.value)}
           >
@@ -117,48 +122,49 @@ export default function ResourceFilter({
         </label>
       </div>
 
-      <label className="border m-1 p-1">
-        <input
-          type="checkbox"
-          checked={filters.availability}
-          onChange={(e) =>
-            handleCheckboxChange('availability', e.target.checked)
-          }
-        />
-        Alleen beschikbare auto&apos;s
-      </label>
+      <div className="flex flex-col gap-2 mb-4">
+        <label className="flex items-center gap-2 text-green-800 font-medium">
+          <input
+            type="checkbox"
+            checked={filters.availability}
+            onChange={(e) =>
+              handleCheckboxChange('availability', e.target.checked)
+            }
+            className="accent-green-600"
+          />
+          Alleen beschikbare auto&apos;s
+        </label>
 
-      <label className="border m-1 p-1">
-        <input
-          type="checkbox"
-          checked={filters.towbar}
-          onChange={(e) => handleCheckboxChange('towbar', e.target.checked)}
-        />
-        Trekhaak
-      </label>
+        <label className="flex items-center gap-2 text-green-800 font-medium">
+          <input
+            type="checkbox"
+            checked={filters.towbar}
+            onChange={(e) => handleCheckboxChange('towbar', e.target.checked)}
+            className="accent-green-600"
+          />
+          Trekhaak
+        </label>
 
-      <label className="border m-1 p-1">
-        <input
-          type="checkbox"
-          checked={filters.winterTires}
-          onChange={(e) =>
-            handleCheckboxChange('winterTires', e.target.checked)
-          }
-        />
-        Winterbanden
-      </label>
-
-      <div>
-        <label>
-          <button
-            className="border m-1 p-1"
-            type="button"
-            onClick={resetFilters}
-          >
-            Wis filters
-          </button>
+        <label className="flex items-center gap-2 text-green-800 font-medium">
+          <input
+            type="checkbox"
+            checked={filters.winterTires}
+            onChange={(e) =>
+              handleCheckboxChange('winterTires', e.target.checked)
+            }
+            className="accent-green-600"
+          />
+          Winterbanden
         </label>
       </div>
+
+      <button
+        type="button"
+        onClick={resetFilters}
+        className="w-full px-4 py-2 text-white bg-green-600 rounded-lg hover:bg-green-700 transition"
+      >
+        Wis filters
+      </button>
     </fieldset>
   );
 }
