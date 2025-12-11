@@ -19,8 +19,8 @@ npm install
 
 ```
 NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=pk.your_token_here
-MYWHEELS_API_URL=https://php-api.mywheels.dev/api/
-MYWHEELS_AUTH_APP_ID=1_4ufl98675y8088ko4k80wow4soo0g8cog8kwsssoo4k4ggc84k
+MYWHEELS_API_URL=api_url_here
+MYWHEELS_AUTH_APP_ID=auth_app_id_here
 ```
 
 3. Run
