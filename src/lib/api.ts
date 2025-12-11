@@ -1,5 +1,5 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import type { RequestBody, ResponseBody } from '../types';
+import type { RequestBody, ResponseBody } from '@/types';
 
 const API_URL = '/api';
 

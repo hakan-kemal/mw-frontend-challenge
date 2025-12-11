@@ -1,24 +1,21 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
-import type { ResponseResult } from '../types';
+import type { ResponseResult } from '@/types';
 
 interface ResourcesProps {
   result: ResponseResult;
   isLoading: boolean;
   error?: Error | null;
+  isGridView: boolean;
 }
 
 export default function Resources({
   result,
   isLoading,
   error,
+  isGridView,
 }: ResourcesProps) {
-  const [isGridView, setIsGridView] = useState(false);
-
-  const toggleView = () => setIsGridView(!isGridView);
-
   if (isLoading) {
     return (
       <p className="text-xl font-semibold text-green-700 animate-pulse">
@@ -45,25 +42,12 @@ export default function Resources({
 
   return (
     <div>
-      <div className="flex justify-between max-w-md">
-        <p className="text-xl font-semibold text-green-700">
-          {result.total} auto{result.total !== 1 ? "'s" : ''} gevonden
-        </p>
-        <button
-          type="button"
-          className="px-3 py-1 rounded-full border transition-colors duration-200 bg-white text-green-800 border-green-300 hover:bg-green-100 cursor-pointer w-24"
-          onClick={toggleView}
-        >
-          {isGridView ? 'Lijst' : 'Raster'}
-        </button>
-      </div>
-
       <div
         className={`grid ${
           isGridView
             ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
             : 'grid-cols-1'
-        } gap-8 mt-8`}
+        } gap-8`}
       >
         {result.results?.map((item, index) => {
           const resource = item.resource;

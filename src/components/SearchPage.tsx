@@ -1,9 +1,10 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import { MdGridView, MdList, MdMap } from 'react-icons/md';
 import { useStore } from '@/lib/store';
 import { useApi } from '@/lib/api';
-import type { ResponseBody, ResponseResult, Result } from '../types';
+import type { ResponseBody, ResponseResult, Result } from '@/types';
 import ResourceFilter from '@/components/ResourceFilter';
 import Resources from '@/components/Resources';
 import Map from '@/components/Map';
@@ -27,6 +28,8 @@ export default function SearchPage() {
   const [fuelType, setFuelType] = useState('');
   const [towbar, setTowbar] = useState(false);
   const [winterTires, setWinterTires] = useState(false);
+  const [showMap, setShowMap] = useState(false);
+  const [isGridView, setIsGridView] = useState(false);
   const { allModels, setAllModels } = useStore();
 
   const { filter, locationPoint } = useMemo(
@@ -98,9 +101,37 @@ export default function SearchPage() {
         allModels={allModels}
       />
 
-      <Map locationPoint={locationPoint} result={result.results} />
+      <div className="flex justify-between max-w-md">
+        <p className="text-xl font-semibold text-green-700">
+          {result.total} auto{result.total !== 1 ? "'s" : ''} gevonden
+        </p>
 
-      <Resources result={result} isLoading={isLoading} error={error} />
+        <div className="flex gap-4 text-green-800">
+          <button
+            type="button"
+            className="cursor-pointer"
+            onClick={() => setShowMap(!showMap)}
+          >
+            <MdMap size={24} />
+          </button>
+          <button
+            type="button"
+            onClick={() => setIsGridView(!isGridView)}
+            className="cursor-pointer"
+          >
+            {isGridView ? <MdList size={24} /> : <MdGridView size={24} />}
+          </button>
+        </div>
+      </div>
+
+      {showMap && <Map locationPoint={locationPoint} result={result.results} />}
+
+      <Resources
+        result={result}
+        isLoading={isLoading}
+        error={error}
+        isGridView={isGridView}
+      />
     </>
   );
 }
