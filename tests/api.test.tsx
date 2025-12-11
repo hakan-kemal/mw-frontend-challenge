@@ -3,7 +3,7 @@
  */
 import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useApi } from './api';
+import { useApi } from '@/lib/api';
 
 function wrapper({ children }: { children: React.ReactNode }) {
   const queryClient = new QueryClient({

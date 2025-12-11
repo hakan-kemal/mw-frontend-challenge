@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
-import type { RequestBody, ResponseBody } from '@/types';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import type { RequestBody, ResponseBody } from '../types';
 
 const API_URL = '/api';
 
@@ -9,7 +9,7 @@ export const useApi = <TResult = ResponseBody>({
 }: Omit<RequestBody, 'jsonrpc' | 'id'>) =>
   useQuery<TResult>({
     queryKey: ['resourceData', method, JSON.stringify(params ?? {})],
-    queryFn: async () => {
+    queryFn: async ({ signal }) => {
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: {
@@ -21,6 +21,7 @@ export const useApi = <TResult = ResponseBody>({
           method,
           params,
         }),
+        signal,
       });
 
       if (!response.ok) {
@@ -41,4 +42,7 @@ export const useApi = <TResult = ResponseBody>({
       return data;
     },
     enabled: Boolean(method),
+    staleTime: 30_000,
+    gcTime: 300_000,
+    placeholderData: keepPreviousData,
   });

@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useState } from 'react';
-import type { ResponseResult } from '@/types';
+import type { ResponseResult } from '../types';
 
 interface ResourcesProps {
   result: ResponseResult;

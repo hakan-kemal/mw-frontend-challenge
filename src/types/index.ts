@@ -48,7 +48,7 @@ export interface Result {
   distance: number | null;
 }
 
-export interface Resource {
+interface Resource {
   id: number;
   registrationPlate: string;
   alias: string;

@@ -2,6 +2,7 @@ import { useRef, useEffect, useState } from 'react';
 import type { LocationPoint, Result } from '@/types';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import { buildMarkersAndBounds } from '@/lib/map';
 
 interface MapProps {
   locationPoint: LocationPoint;
@@ -56,24 +57,8 @@ export default function Map({ locationPoint, result }: MapProps) {
 
     if (!result || result.length === 0) return;
 
-    const bounds = new mapboxgl.LngLatBounds();
-
-    result.forEach((marker) => {
-      const hasCoords =
-        typeof marker.resource.longitude === 'number' &&
-        typeof marker.resource.latitude === 'number';
-
-      if (!hasCoords) return;
-
-      const newMarker = new mapboxgl.Marker().setLngLat([
-        marker.resource.longitude,
-        marker.resource.latitude,
-      ]);
-
-      newMarker.addTo(map);
-      markersRef.current.push(newMarker);
-      bounds.extend([marker.resource.longitude, marker.resource.latitude]);
-    });
+    const { markers, bounds } = buildMarkersAndBounds(map, result);
+    markersRef.current = markers;
 
     if (!bounds.isEmpty()) {
       map.fitBounds(bounds, { padding: 50, maxZoom: 14, duration: 500 });
